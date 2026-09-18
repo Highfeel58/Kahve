@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benimle Bir Kahve İçer misin? ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffe5ec, #ffc2d1);
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            width: 90%;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            color: #ff477e;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #6c757d;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+            min-height: 50px;
+        }
+
+        button {
+            padding: 12px 35px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        #yesBtn {
+            background-color: #ff477e;
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 71, 126, 0.4);
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1);
+            background-color: #ff5c8a;
+        }
+
+        #noBtn {
+            background-color: #e9ecef;
+            color: #495057;
+            position: absolute;
+            left: 55%;
+            transition: all 0.1s ease;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .success-image {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: beat 0.5s infinite alternate;
+        }
+
+        @keyframes beat {
+            to { transform: scale(1.2); }
+        }
+    </style>
+    <!-- Konfeti efekti için harici kütüphane -->
+    <script src="https://jsdelivr.net"></script>
+</head>
+<body>
+
+    <div class="container" id="quizContainer">
+        <h1 id="question">Benimle bir kahve içer misin? ☕</h1>
+        <p id="subText">Kırmazsın bence ya...</p>
+        
+        <div class="buttons">
+            <button id="yesBtn">Evet</button>
+            <button id="noBtn">Hayır</button>
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const question = document.getElementById('question');
+        const subText = document.getElementById('subText');
+        const buttonsContainer = document.querySelector('.buttons');
+
+        // "Hayır" butonundan kaçış fonksiyonu
+        function escapeButton() {
+            // Ekran boyut sınırlarını al (butonun dışarı taşmaması için)
+            const padding = 20;
+            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+            // Rastgele yeni pozisyon hesapla
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+
+            // Butonu ekranın rastgele yerine taşı (body'e göre konumlandır)
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        // Hem mouse (PC) hem dokunma (Mobil) için tetikleyiciler
+        noBtn.addEventListener('mouseenter', escapeButton);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Sayfanın kaymasını engelle
+            escapeButton();
+        });
+
+        // "Evet" butonuna basıldığında
+        yesBtn.addEventListener('click', () => {
+            // Arayüzü güncelle
+            question.innerHTML = "Harika! Başardım! 🎉";
+            subText.innerHTML = "Haberleşiyoruz o zaman, takvimi ayarla! 📅 ✨";
+            
+            // Butonları gizle
+            buttonsContainer.classList.add('hidden');
+
+            // Kalp/Kutlama emojisi ekle
+            const emoji = document.createElement('div');
+            emoji.className = 'success-image';
+            emoji.innerText = '💖';
+            document.getElementById('quizContainer').prepend(emoji);
+
+            // Sürekli konfeti patlatma efekti
+            var duration = 4 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 }
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 }
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        });
+    </script>
+</body>
+</html>
